@@ -1,0 +1,383 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap");
+
+:root {
+  --text: #5b3a2e;
+  --border: #ffd0e1;
+  --card: rgba(255, 255, 255, 0.92);
+  --shadow: 0 18px 45px rgba(91, 58, 46, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.bg {
+  min-height: 100vh;
+  position: relative;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 35%),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.55), transparent 40%),
+    linear-gradient(135deg, #ffe6ef, #fff7e8);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,0.55), rgba(255,255,255,0.15) 45%, rgba(0,0,0,0.12)),
+    linear-gradient(180deg, rgba(255, 230, 239, 0.25), rgba(255, 247, 232, 0.22));
+  pointer-events: none;
+}
+
+.center {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 16px;
+}
+
+.sticker-card {
+  width: min(520px, 92vw);
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 22px 18px 18px;
+  position: relative;
+}
+
+/* Sticker PNGs around card */
+.card-sticker {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 14px 22px rgba(91,58,46,0.18));
+  opacity: 0.98;
+}
+
+.card-sticker.s1 { left: -34px; top: -42px; transform: rotate(-12deg); }
+.card-sticker.s2 { right: -40px; top: -28px; transform: rotate(10deg); width: 92px; height: 92px; }
+.card-sticker.s3 { left: -42px; bottom: -34px; transform: rotate(9deg); width: 94px; height: 94px; }
+.card-sticker.s4 { right: -34px; bottom: -44px; transform: rotate(-9deg); }
+
+.card-title {
+  font-family: "Baloo 2", cursive;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin: 0 0 6px;
+  font-size: 26px;
+}
+
+.card-question {
+  font-family: "Baloo 2", cursive;
+  font-weight: 800;
+  margin: 6px 0 8px;
+  font-size: clamp(26px, 3.6vw, 34px);
+}
+
+.card-sub {
+  margin: 0 0 16px;
+  opacity: 0.92;
+  font-weight: 700;
+}
+
+.btn-row {
+  position: relative;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-yes {
+  background: linear-gradient(135deg, #ffb6c8, #ffd6a5);
+  box-shadow: 0 12px 25px rgba(255, 182, 200, 0.35);
+}
+
+.btn-yes:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.02); }
+
+.btn-no {
+  background: linear-gradient(135deg, #bde0fe, #cdb4db);
+  box-shadow: 0 12px 25px rgba(189, 224, 254, 0.35);
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  /* ✅ Smooth movement */
+  transition:
+    transform 520ms cubic-bezier(.22,.9,.3,1),
+    box-shadow 180ms ease;
+  will-change: transform;
+}
+
+/* Wiggle */
+@keyframes wiggle {
+  0% { transform: translate(var(--x), var(--y)) rotate(0deg); }
+  35% { transform: translate(var(--x), var(--y)) rotate(-6deg); }
+  70% { transform: translate(var(--x), var(--y)) rotate(6deg); }
+  100% { transform: translate(var(--x), var(--y)) rotate(0deg); }
+}
+.wiggle { animation: wiggle 150ms ease; }
+
+.small-note {
+  margin-top: 14px;
+  font-size: 13px;
+  opacity: 0.78;
+  font-weight: 700;
+}
+
+/* Photo collage behind everything */
+.collage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.collage-grid {
+  position: absolute;
+  inset: -30px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+
+  opacity: 0.75;
+  transform: rotate(-2deg) scale(1.03);
+  filter: blur(6px) saturate(1.05); /* 👈 BLUR BEFORE YES */
+  animation: dreamyBlurPulse 4.8s ease-in-out infinite;
+  transition: filter 520ms ease, opacity 420ms ease;
+}
+
+.afteryes.show ~ .collage .collage-grid,
+.afteryes.show .collage-grid {
+  filter: blur(0px) saturate(1.05);
+  opacity: 0.95;
+}
+
+.afteryes.show .collage-grid {
+  transition: filter 720ms ease, opacity 620ms ease;
+}
+
+@media (max-width: 720px) {
+  .collage-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@keyframes dreamyBlurPulse {
+  0%   { filter: blur(6px) saturate(1.05); opacity: 0.72; }
+  50%  { filter: blur(8px) saturate(1.08); opacity: 0.78; }
+  100% { filter: blur(6px) saturate(1.05); opacity: 0.72; }
+}
+/* Spotlight blur layer: blurs background, leaves center area clear */
+.bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;            /* between collage (1) and card (5) */
+  pointer-events: none;
+
+  /* actual blur */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* slight soft tint */
+  background: rgba(255, 230, 239, 0.08);
+
+  /* cut out a clear circle in the middle (spotlight) */
+  -webkit-mask: radial-gradient(circle 220px at 50% 50%, transparent 0 170px, #000 230px);
+  mask: radial-gradient(circle 220px at 50% 50%, transparent 0 170px, #000 230px);
+}
+/* After YES: stop pulsing/blur + remove spotlight */
+.bg:has(.afteryes.show) .collage-grid {
+  animation: none;
+  filter: blur(0px) saturate(1.05);
+  opacity: 0.95;
+}
+
+.bg:has(.afteryes.show)::before {
+  display: none;
+}
+
+.polaroid {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 8px 8px 16px;
+  box-shadow: 0 14px 30px rgba(91, 58, 46, 0.12);
+  border: 2px solid rgba(255, 208, 225, 0.7);
+  transform: rotate(var(--r));
+}
+
+.polaroid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .polaroid img { height: 140px; }
+}
+
+/* Floating hearts overlay */
+.hearts {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  bottom: -40px;
+  opacity: 0.55;
+  animation: floatUp linear infinite;
+  filter: blur(0.1px);
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-110vh) scale(1.15); }
+}
+
+/* Full-screen collage takeover after YES */
+.afteryes {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 420ms ease, transform 420ms ease;
+  pointer-events: none;
+}
+
+.afteryes.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.afteryes-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.85), transparent 35%),
+    radial-gradient(circle at 70% 35%, rgba(255,255,255,0.65), transparent 40%),
+    linear-gradient(135deg, rgba(255,230,239,0.92), rgba(255,247,232,0.92));
+}
+
+.afteryes-grid {
+  position: absolute;
+  inset: -24px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  padding: 24px;
+  filter: saturate(1.05);
+  opacity: 0.95;
+  transform: rotate(-2deg) scale(1.02);
+}
+
+@media (max-width: 720px) {
+  .afteryes-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.afteryes-tile {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 8px 8px 16px;
+  box-shadow: 0 14px 30px rgba(91, 58, 46, 0.12);
+  border: 2px solid rgba(255, 208, 225, 0.85);
+  transform: rotate(var(--r));
+}
+
+.afteryes-tile img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .afteryes-tile img { height: 120px; }
+}
+
+/* Message bubble on top */
+.afteryes-msg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+.card-sticker,
+.afteryes-sticker {
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+  filter: contrast(1.08) saturate(1.05)
+          drop-shadow(0 10px 18px rgba(91, 58, 46, 0.14));
+}
+
+
+.afteryes-bubble {
+  position: relative;
+  background: rgba(255,255,255,0.92);
+  border: 3px solid rgba(255,208,225,0.95);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding: 16px 18px 14px;
+  text-align: center;
+  min-width: min(420px, 92vw);
+}
+
+.afteryes-emoji { font-size: 44px; }
+.afteryes-title {
+  font-family: "Baloo 2", cursive;
+  font-weight: 900;
+  font-size: 34px;
+  margin-top: 2px;
+}
+.afteryes-sub {
+  font-weight: 800;
+  opacity: 0.92;
+}
+
+/* Sticker PNGs around after-yes bubble */
+.afteryes-sticker {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 14px 22px rgba(91,58,46,0.18));
+}
+.afteryes-sticker.a1 { left: -36px; top: -40px; transform: rotate(-10deg); }
+.afteryes-sticker.a2 { right: -40px; top: -30px; transform: rotate(12deg); width: 92px; height: 92px; }
